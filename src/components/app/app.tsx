@@ -91,7 +91,7 @@ export const App = () => (
           }
         />
         <Route
-          path='/ingredients/:_id'
+          path='/ingredients/:id'
           element={
             <Modal
               title='Ingredient Details'
