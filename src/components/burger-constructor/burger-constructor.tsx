@@ -1,36 +1,50 @@
 import { FC, useMemo } from 'react';
+import { useSelector, useDispatch } from '../../services/store';
+import { BurgerConstructorUI } from '../ui/burger-constructor';
 import { TConstructorIngredient } from '@utils-types';
-import { BurgerConstructorUI } from '@ui';
+import {
+  clearConstructor,
+  setOrderRequest,
+  setOrderModalData
+} from '../../services/slices/constructor';
 
 export const BurgerConstructor: FC = () => {
-  /** TODO: взять переменные constructorItems, orderRequest и orderModalData из стора */
-  const constructorItems = {
-    bun: {
-      price: 0
-    },
-    ingredients: []
-  };
+  const dispatch = useDispatch();
 
-  const orderRequest = false;
-
-  const orderModalData = null;
-
-  const onOrderClick = () => {
-    if (!constructorItems.bun || orderRequest) return;
-  };
-  const closeOrderModal = () => {};
-
-  const price = useMemo(
-    () =>
-      (constructorItems.bun ? constructorItems.bun.price * 2 : 0) +
-      constructorItems.ingredients.reduce(
-        (s: number, v: TConstructorIngredient) => s + v.price,
-        0
-      ),
-    [constructorItems]
+  const { constructorItems, orderRequest, orderModalData } = useSelector(
+    (state) => state.constructor
   );
 
-  return null;
+  const onOrderClick = () => {
+    if (!constructorItems || !constructorItems.bun || orderRequest) return;
+    dispatch(setOrderRequest(true));
+    // dispatch(sendOrder({ ingredients: [...] }));
+  };
+
+  const closeOrderModal = () => {
+    dispatch(setOrderModalData(null));
+    dispatch(clearConstructor());
+  };
+
+  const price = useMemo(() => {
+    if (!constructorItems) return 0;
+
+    const bunPrice = constructorItems.bun ? constructorItems.bun.price * 2 : 0;
+    const ingredientsPrice =
+      constructorItems.ingredients?.reduce(
+        (sum: number, item: TConstructorIngredient) => sum + item.price,
+        0
+      ) || 0;
+
+    return bunPrice + ingredientsPrice;
+  }, [constructorItems]);
+
+  if (
+    !constructorItems?.ingredients ||
+    !Array.isArray(constructorItems.ingredients)
+  ) {
+    return <p>Загрузка конструктора...</p>;
+  }
 
   return (
     <BurgerConstructorUI
@@ -43,3 +57,5 @@ export const BurgerConstructor: FC = () => {
     />
   );
 };
+
+export default BurgerConstructor;
