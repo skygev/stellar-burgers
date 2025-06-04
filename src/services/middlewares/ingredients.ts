@@ -11,6 +11,6 @@ export const fetchIngredients = createAsyncThunk<TIngredient[]>(
       throw new Error('Не удалось загрузить ингредиенты');
     }
     const data = await response.json();
-    return data.data; // это массив ингредиентов
+    return data.data; // массив ингредиентов
   }
 );

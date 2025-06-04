@@ -1,4 +1,3 @@
-// src/components/burger-constructor-element/burger-constructor-element.tsx
 import { FC, memo } from 'react';
 import { BurgerConstructorElementUI } from '../ui/burger-constructor-element';
 import { BurgerConstructorElementProps } from './type';
