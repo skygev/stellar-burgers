@@ -12,7 +12,9 @@ export type TIngredient = {
   image_mobile: string;
 };
 
-export type TConstructorIngredient = TIngredient & { _uid: string };
+export type TConstructorIngredient = TIngredient & {
+  id: string;
+};
 
 export type TOrder = {
   _id: string;
