@@ -1,4 +1,6 @@
 import { configureStore } from '@reduxjs/toolkit';
+import ingredientsReducer from './ingredientsSlice';
+import constructorReducer from './constructorSlice';
 
 import {
   TypedUseSelectorHook,
@@ -6,18 +8,29 @@ import {
   useSelector as selectorHook
 } from 'react-redux';
 
-const rootReducer = () => {}; // Заменить на импорт настоящего редьюсера
+// Объект с редьюсерами
+const reducers = {
+  ingredients: ingredientsReducer,
+  constructor: constructorReducer
+};
 
+// Создание Redux-хранилища с отключением serializableCheck
 const store = configureStore({
-  reducer: rootReducer,
+  reducer: reducers,
+  middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: false
+    }),
   devTools: process.env.NODE_ENV !== 'production'
 });
 
-export type RootState = ReturnType<typeof rootReducer>;
-
+// Типы RootState и AppDispatch для typed-хуков
+export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
+// Кастомные хуки
 export const useDispatch: () => AppDispatch = () => dispatchHook();
 export const useSelector: TypedUseSelectorHook<RootState> = selectorHook;
 
+// Экспорт хранилища по умолчанию
 export default store;
