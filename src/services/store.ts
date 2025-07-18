@@ -1,7 +1,11 @@
 import { configureStore } from '@reduxjs/toolkit';
+
+// Импорты редьюсеров слайсов
 import ingredientsReducer from './ingredientsSlice';
 import constructorReducer from './constructorSlice';
+import orderReducer from './orderSlice';
 
+// Типизированные хуки
 import {
   TypedUseSelectorHook,
   useDispatch as dispatchHook,
@@ -11,10 +15,11 @@ import {
 // Объект с редьюсерами
 const reducers = {
   ingredients: ingredientsReducer,
-  constructor: constructorReducer
+  constructor: constructorReducer,
+  order: orderReducer
 };
 
-// Создание Redux-хранилища с отключением serializableCheck
+// Создание Redux-хранилища
 const store = configureStore({
   reducer: reducers,
   middleware: (getDefaultMiddleware) =>
@@ -24,13 +29,13 @@ const store = configureStore({
   devTools: process.env.NODE_ENV !== 'production'
 });
 
-// Типы RootState и AppDispatch для typed-хуков
+// Типы RootState и AppDispatch
 export type RootState = ReturnType<typeof store.getState>;
 export type AppDispatch = typeof store.dispatch;
 
-// Кастомные хуки
+// Кастомные хуки с типами
 export const useDispatch: () => AppDispatch = () => dispatchHook();
 export const useSelector: TypedUseSelectorHook<RootState> = selectorHook;
 
-// Экспорт хранилища по умолчанию
+// Экспорт по умолчанию
 export default store;

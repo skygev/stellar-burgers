@@ -1,6 +1,6 @@
 import { FC, memo } from 'react';
 import { useLocation } from 'react-router-dom';
-import { v4 as uuidv4 } from 'uuid'; // добавляем uuid
+import { v4 as uuidv4 } from 'uuid';
 
 import { BurgerIngredientUI } from '@ui';
 import { TBurgerIngredientProps } from './type';
@@ -14,7 +14,7 @@ export const BurgerIngredient: FC<TBurgerIngredientProps> = memo(
     const dispatch = useDispatch();
 
     const handleAdd = () => {
-      dispatch(addIngredient({ ...ingredient, id: uuidv4() })); //добавляем уникальный id
+      dispatch(addIngredient({ ...ingredient, id: uuidv4() }));
     };
 
     return (

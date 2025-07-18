@@ -4,13 +4,13 @@ import { TIngredient } from '@utils-types';
 
 // Thunk для запроса ингредиентов
 export const fetchIngredients = createAsyncThunk<
-  TIngredient[],
-  void,
-  { rejectValue: string }
+  TIngredient[], // тип данных, который вернёт Thunk
+  void, // тип аргумента
+  { rejectValue: string } // тип ошибки, если reject
 >('ingredients/fetchIngredients', async (_, thunkAPI) => {
   try {
-    const data = await getIngredientsApi();
-    return data; // массив ингредиентов
+    const data = await getIngredientsApi(); // вызов API
+    return data; // возвращаем массив ингредиентов
   } catch (err) {
     return thunkAPI.rejectWithValue('Ошибка загрузки ингредиентов');
   }
