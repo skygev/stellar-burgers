@@ -1,41 +1,34 @@
-import { configureStore } from '@reduxjs/toolkit';
+import { configureStore, combineReducers } from '@reduxjs/toolkit';
+import { ingredientsReducer } from './slices/ingredientsSlice';
+import { feedReducer } from './slices/feedSlice';
+import { userReducer } from './slices/userSlice';
+import { ordersReducer } from './slices/ordersSlice';
+import { constructorReducer } from './slices/constructorSlice';
 
-// Импорты редьюсеров слайсов
-import ingredientsReducer from './ingredientsSlice';
-import constructorReducer from './constructorSlice';
-import orderReducer from './orderSlice';
-
-// Типизированные хуки
 import {
   TypedUseSelectorHook,
   useDispatch as dispatchHook,
   useSelector as selectorHook
 } from 'react-redux';
 
-// Объект с редьюсерами
-const reducers = {
+const rootReducer = combineReducers({
   ingredients: ingredientsReducer,
-  constructor: constructorReducer,
-  order: orderReducer
-};
+  feed: feedReducer,
+  user: userReducer,
+  orders: ordersReducer,
+  constructorBurger: constructorReducer
+});
 
-// Создание Redux-хранилища
 const store = configureStore({
-  reducer: reducers,
-  middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware({
-      serializableCheck: false
-    }),
+  reducer: rootReducer,
   devTools: process.env.NODE_ENV !== 'production'
 });
 
-// Типы RootState и AppDispatch
-export type RootState = ReturnType<typeof store.getState>;
+export type RootState = ReturnType<typeof rootReducer>;
+
 export type AppDispatch = typeof store.dispatch;
 
-// Кастомные хуки с типами
 export const useDispatch: () => AppDispatch = () => dispatchHook();
 export const useSelector: TypedUseSelectorHook<RootState> = selectorHook;
 
-// Экспорт по умолчанию
 export default store;

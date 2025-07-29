@@ -1,8 +1,3 @@
-import React from 'react';
-import { Routes, Route, useLocation } from 'react-router-dom';
-import styles from './app.module.css';
-
-import { AppHeader } from '@components';
 import {
   ConstructorPage,
   Feed,
@@ -14,25 +9,32 @@ import {
   ProfileOrders,
   NotFound404
 } from '@pages';
+import { Modal, OrderInfo, IngredientDetails, AppHeader } from '@components';
+import '../../index.css';
+import styles from './app.module.css';
+import { Routes, Route, useNavigate, useLocation } from 'react-router-dom';
+import { ProtectedRoute } from '../protected-route';
+import { useEffect } from 'react';
+import { checkUserAuth } from '../../services/slices/userSlice';
+import { useDispatch } from '../../services/store';
 
-import { IngredientDetails, OrderInfo } from '@components';
-import { Modal } from '../modal/modal';
-import { ProtectedRoute } from '../protected-route/protected-route';
-
-export const App = () => {
+const App = () => {
+  const navigate = useNavigate();
   const location = useLocation();
-  const background = location.state?.background;
+  const dispatch = useDispatch();
+  const backgroundLocation = location.state?.background;
+
+  useEffect(() => {
+    dispatch(checkUserAuth());
+  }, [dispatch]);
 
   return (
     <div className={styles.app}>
       <AppHeader />
-
-      {/* Основные маршруты */}
-      <Routes location={background || location}>
+      <Routes location={backgroundLocation || location}>
         <Route path='/' element={<ConstructorPage />} />
+        <Route path='/ingredients/:id' element={<IngredientDetails />} />
         <Route path='/feed' element={<Feed />} />
-
-        {/* Защищённые маршруты для неавторизованных пользователей */}
         <Route
           path='/login'
           element={
@@ -65,8 +67,6 @@ export const App = () => {
             </ProtectedRoute>
           }
         />
-
-        {/* Защищённые маршруты для авторизованных пользователей */}
         <Route
           path='/profile'
           element={
@@ -84,32 +84,24 @@ export const App = () => {
           }
         />
 
-        {/* Страница 404 */}
         <Route path='*' element={<NotFound404 />} />
       </Routes>
 
-      {/* Модальные маршруты */}
-      {background && (
+      {backgroundLocation && (
         <Routes>
           <Route
-            path='/ingredients/:id'
+            path='/feed/:number'
             element={
-              <Modal
-                title='Детали ингредиента'
-                onClose={() => window.history.back()}
-              >
-                <IngredientDetails />
+              <Modal title={'Детали заказа'} onClose={() => navigate(-1)}>
+                <OrderInfo />
               </Modal>
             }
           />
           <Route
-            path='/feed/:number'
+            path='/ingredients/:id'
             element={
-              <Modal
-                title='Информация о заказе'
-                onClose={() => window.history.back()}
-              >
-                <OrderInfo />
+              <Modal title={'Детали ингридиента'} onClose={() => navigate(-1)}>
+                <IngredientDetails />
               </Modal>
             }
           />
@@ -117,10 +109,7 @@ export const App = () => {
             path='/profile/orders/:number'
             element={
               <ProtectedRoute>
-                <Modal
-                  title='Информация о заказе'
-                  onClose={() => window.history.back()}
-                >
+                <Modal title={'Детали заказа'} onClose={() => navigate(-1)}>
                   <OrderInfo />
                 </Modal>
               </ProtectedRoute>

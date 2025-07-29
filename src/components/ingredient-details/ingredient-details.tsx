@@ -1,10 +1,23 @@
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
 import { Preloader } from '../ui/preloader';
 import { IngredientDetailsUI } from '../ui/ingredient-details';
+import { useSelector } from '../../services/store';
+import { getIngredients } from '../../services/slices/ingredientsSlice';
+import { useParams } from 'react-router-dom';
+import { useDispatch } from '../../services/store';
+import { ingredientsThunk } from '../../services/slices/ingredientsSlice';
 
 export const IngredientDetails: FC = () => {
-  /** TODO: взять переменную из стора */
-  const ingredientData = null;
+  const { id } = useParams();
+  const ingredient = useSelector(getIngredients);
+  const ingredientData = ingredient.buns.find((item) => item._id === id);
+  const dispatch = useDispatch();
+
+  useEffect(() => {
+    if (!ingredient.buns.length) {
+      dispatch(ingredientsThunk());
+    }
+  }, [dispatch]);
 
   if (!ingredientData) {
     return <Preloader />;
