@@ -1,57 +1,26 @@
 import { useState, useRef, useEffect, FC } from 'react';
 import { useInView } from 'react-intersection-observer';
+import { useDispatch, useSelector } from 'react-redux';
 
-import { TTabMode } from '@utils-types';
+import { TTabMode, TIngredient } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
+import { fetchIngredients } from '../../services/slices/ingredientsSlice';
+import { RootState, AppDispatch } from '../../services/store';
 
 export const BurgerIngredients: FC = () => {
-  /** TODO: взять переменные из стора */
-  // Временные фейковые данные для отображения секций
-  const buns = [
-    {
-      _id: '1',
-      name: 'Булка',
-      type: 'bun',
-      proteins: 10,
-      fat: 5,
-      carbohydrates: 20,
-      calories: 200,
-      price: 50,
-      image: '',
-      image_large: '',
-      image_mobile: ''
-    }
-  ];
-  const mains = [
-    {
-      _id: '2',
-      name: 'Котлета',
-      type: 'main',
-      proteins: 15,
-      fat: 10,
-      carbohydrates: 5,
-      calories: 150,
-      price: 80,
-      image: '',
-      image_large: '',
-      image_mobile: ''
-    }
-  ];
-  const sauces = [
-    {
-      _id: '3',
-      name: 'Соус',
-      type: 'sauce',
-      proteins: 2,
-      fat: 1,
-      carbohydrates: 3,
-      calories: 30,
-      price: 20,
-      image: '',
-      image_large: '',
-      image_mobile: ''
-    }
-  ];
+  const dispatch = useDispatch<AppDispatch>();
+  const {
+    items: ingredients,
+    loading,
+    error
+  } = useSelector((state: RootState) => state.ingredients);
+
+  // Фильтруем ингредиенты по типам
+  const buns = ingredients.filter((item: TIngredient) => item.type === 'bun');
+  const mains = ingredients.filter((item: TIngredient) => item.type === 'main');
+  const sauces = ingredients.filter(
+    (item: TIngredient) => item.type === 'sauce'
+  );
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
@@ -69,6 +38,11 @@ export const BurgerIngredients: FC = () => {
   const [saucesRef, inViewSauces] = useInView({
     threshold: 0
   });
+
+  // Загружаем ингредиенты при монтировании компонента
+  useEffect(() => {
+    dispatch(fetchIngredients());
+  }, [dispatch]);
 
   useEffect(() => {
     if (inViewBuns) {
@@ -89,6 +63,16 @@ export const BurgerIngredients: FC = () => {
     if (tab === 'sauce')
       titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
   };
+
+  // Показываем лоадер во время загрузки
+  if (loading) {
+    return <div>Загрузка ингредиентов...</div>;
+  }
+
+  // Показываем ошибку, если что-то пошло не так
+  if (error) {
+    return <div>Ошибка загрузки ингредиентов: {error}</div>;
+  }
 
   return (
     <BurgerIngredientsUI

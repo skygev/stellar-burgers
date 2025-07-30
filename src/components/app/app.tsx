@@ -1,4 +1,6 @@
 import { Routes, Route, useNavigate } from 'react-router-dom';
+import { useEffect } from 'react';
+import { useDispatch } from 'react-redux';
 import {
   ConstructorPage,
   Feed,
@@ -16,10 +18,22 @@ import { ModalUI } from '../ui/modal/modal';
 import { IngredientDetails } from '../ingredient-details/ingredient-details';
 import { OrderInfo } from '../order-info/order-info';
 import styles from './app.module.css';
+import { AppDispatch } from '../../services/store';
+import { getUser } from '../../services/slices/authSlice';
+import { getCookie } from '../../utils/cookie';
 
 const App = () => {
   const navigate = useNavigate();
+  const dispatch = useDispatch<AppDispatch>();
   const handleClose = () => navigate(-1);
+
+  useEffect(() => {
+    const accessToken = getCookie('accessToken');
+    if (accessToken) {
+      dispatch(getUser());
+    }
+  }, [dispatch]);
+
   return (
     <div className={styles.app}>
       <AppHeader />
@@ -45,7 +59,7 @@ const App = () => {
         <Route
           path='/login'
           element={
-            <ProtectedRoute>
+            <ProtectedRoute onlyUnAuth>
               <Login />
             </ProtectedRoute>
           }
@@ -53,7 +67,7 @@ const App = () => {
         <Route
           path='/register'
           element={
-            <ProtectedRoute>
+            <ProtectedRoute onlyUnAuth>
               <Register />
             </ProtectedRoute>
           }
@@ -61,7 +75,7 @@ const App = () => {
         <Route
           path='/forgot-password'
           element={
-            <ProtectedRoute>
+            <ProtectedRoute onlyUnAuth>
               <ForgotPassword />
             </ProtectedRoute>
           }
@@ -69,7 +83,7 @@ const App = () => {
         <Route
           path='/reset-password'
           element={
-            <ProtectedRoute>
+            <ProtectedRoute onlyUnAuth>
               <ResetPassword />
             </ProtectedRoute>
           }
