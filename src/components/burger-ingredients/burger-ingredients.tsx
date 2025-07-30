@@ -3,14 +3,55 @@ import { useInView } from 'react-intersection-observer';
 
 import { TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
-import { useSelector } from '../../services/store';
-import { getIngredients } from '../../services/slices/ingredientsSlice';
 
 export const BurgerIngredients: FC = () => {
-  const ingredients = useSelector(getIngredients);
-  const buns = ingredients.buns.filter((item) => item.type === 'bun');
-  const mains = ingredients.mains.filter((item) => item.type === 'main');
-  const sauces = ingredients.sauces.filter((item) => item.type === 'sauce');
+  /** TODO: взять переменные из стора */
+  // Временные фейковые данные для отображения секций
+  const buns = [
+    {
+      _id: '1',
+      name: 'Булка',
+      type: 'bun',
+      proteins: 10,
+      fat: 5,
+      carbohydrates: 20,
+      calories: 200,
+      price: 50,
+      image: '',
+      image_large: '',
+      image_mobile: ''
+    }
+  ];
+  const mains = [
+    {
+      _id: '2',
+      name: 'Котлета',
+      type: 'main',
+      proteins: 15,
+      fat: 10,
+      carbohydrates: 5,
+      calories: 150,
+      price: 80,
+      image: '',
+      image_large: '',
+      image_mobile: ''
+    }
+  ];
+  const sauces = [
+    {
+      _id: '3',
+      name: 'Соус',
+      type: 'sauce',
+      proteins: 2,
+      fat: 1,
+      carbohydrates: 3,
+      calories: 30,
+      price: 20,
+      image: '',
+      image_large: '',
+      image_mobile: ''
+    }
+  ];
 
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
   const titleBunRef = useRef<HTMLHeadingElement>(null);
@@ -62,8 +103,6 @@ export const BurgerIngredients: FC = () => {
       mainsRef={mainsRef}
       saucesRef={saucesRef}
       onTabClick={onTabClick}
-      isLoading={false}
-      error={null}
     />
   );
 };
