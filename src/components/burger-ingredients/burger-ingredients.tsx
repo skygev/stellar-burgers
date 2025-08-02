@@ -1,32 +1,35 @@
 import { useState, useRef, useEffect, FC } from 'react';
 import { useInView } from 'react-intersection-observer';
-import { useDispatch, useSelector } from 'react-redux';
 
-import { TTabMode, TIngredient } from '@utils-types';
+import { TTabMode } from '@utils-types';
 import { BurgerIngredientsUI } from '../ui/burger-ingredients';
-import { fetchIngredients } from '../../services/slices/ingredientsSlice';
-import { RootState, AppDispatch } from '../../services/store';
+import { useSelector } from '../../services/store';
+import { getMenuCatalog } from '../../services/slices/menuCatalogSlice';
 
 export const BurgerIngredients: FC = () => {
-  const dispatch = useDispatch<AppDispatch>();
-  const {
-    items: ingredients,
-    loading,
-    error
-  } = useSelector((state: RootState) => state.ingredients);
+  // Получение каталога ингредиентов из хранилища
+  const menuCatalog = useSelector(getMenuCatalog);
 
-  // Фильтруем ингредиенты по типам
-  const buns = ingredients.filter((item: TIngredient) => item.type === 'bun');
-  const mains = ingredients.filter((item: TIngredient) => item.type === 'main');
-  const sauces = ingredients.filter(
-    (item: TIngredient) => item.type === 'sauce'
-  );
+  // Фильтрация ингредиентов по категориям
+  const buns = menuCatalog.buns.filter(function filterBuns(item) {
+    return item.type === 'bun';
+  });
+  const mains = menuCatalog.mains.filter(function filterMains(item) {
+    return item.type === 'main';
+  });
+  const sauces = menuCatalog.sauces.filter(function filterSauces(item) {
+    return item.type === 'sauce';
+  });
 
+  // Состояние активной вкладки
   const [currentTab, setCurrentTab] = useState<TTabMode>('bun');
+
+  // Ссылки на заголовки секций для прокрутки
   const titleBunRef = useRef<HTMLHeadingElement>(null);
   const titleMainRef = useRef<HTMLHeadingElement>(null);
   const titleSaucesRef = useRef<HTMLHeadingElement>(null);
 
+  // Хуки для отслеживания видимости секций
   const [bunsRef, inViewBuns] = useInView({
     threshold: 0
   });
@@ -39,11 +42,7 @@ export const BurgerIngredients: FC = () => {
     threshold: 0
   });
 
-  // Загружаем ингредиенты при монтировании компонента
-  useEffect(() => {
-    dispatch(fetchIngredients());
-  }, [dispatch]);
-
+  // Автоматическое переключение вкладок при прокрутке
   useEffect(() => {
     if (inViewBuns) {
       setCurrentTab('bun');
@@ -54,24 +53,23 @@ export const BurgerIngredients: FC = () => {
     }
   }, [inViewBuns, inViewFilling, inViewSauces]);
 
-  const onTabClick = (tab: string) => {
-    setCurrentTab(tab as TTabMode);
-    if (tab === 'bun')
-      titleBunRef.current?.scrollIntoView({ behavior: 'smooth' });
-    if (tab === 'main')
-      titleMainRef.current?.scrollIntoView({ behavior: 'smooth' });
-    if (tab === 'sauce')
-      titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
-  };
+  // Обработчик переключения вкладок
+  function handleTabClick(tab: string) {
+    const tabMode = tab as TTabMode;
+    setCurrentTab(tabMode);
 
-  // Показываем лоадер во время загрузки
-  if (loading) {
-    return <div>Загрузка ингредиентов...</div>;
-  }
-
-  // Показываем ошибку, если что-то пошло не так
-  if (error) {
-    return <div>Ошибка загрузки ингредиентов: {error}</div>;
+    // Прокрутка к соответствующей секции
+    switch (tabMode) {
+      case 'bun':
+        titleBunRef.current?.scrollIntoView({ behavior: 'smooth' });
+        break;
+      case 'main':
+        titleMainRef.current?.scrollIntoView({ behavior: 'smooth' });
+        break;
+      case 'sauce':
+        titleSaucesRef.current?.scrollIntoView({ behavior: 'smooth' });
+        break;
+    }
   }
 
   return (
@@ -86,7 +84,7 @@ export const BurgerIngredients: FC = () => {
       bunsRef={bunsRef}
       mainsRef={mainsRef}
       saucesRef={saucesRef}
-      onTabClick={onTabClick}
+      onTabClick={handleTabClick}
     />
   );
 };

@@ -13,6 +13,9 @@
     0px 16px 24px rgba(0, 0, 0, 0.04),
     0px 4px 8px rgba(0, 0, 0, 0.04),
     0px 0px 1px rgba(0, 0, 0, 0.04);
+  max-width: 90vw;
+  max-height: 90vh;
+  overflow: auto;
 }
 
 .header {

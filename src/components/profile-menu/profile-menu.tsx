@@ -1,19 +1,24 @@
 import { FC } from 'react';
-import { useLocation, useNavigate } from 'react-router-dom';
-import { useDispatch } from 'react-redux';
+import { useLocation } from 'react-router-dom';
 import { ProfileMenuUI } from '@ui';
-import { AppDispatch } from '../../services/store';
-import { logoutUser } from '../../services/slices/authSlice';
+import { useDispatch } from '../../services/store';
+import { signOutUser } from '../../services/slices/authenticationSlice';
+import { useNavigate } from 'react-router-dom';
 
 export const ProfileMenu: FC = () => {
+  // Получение текущего пути для подсветки активного пункта
   const { pathname } = useLocation();
-  const navigate = useNavigate();
-  const dispatch = useDispatch<AppDispatch>();
+  // Диспетчер для отправки действий в store
+  const storeDispatch = useDispatch();
+  // Хук для программной навигации
+  const router = useNavigate();
 
-  const handleLogout = async () => {
-    await dispatch(logoutUser());
-    navigate('/');
-  };
+  // Обработчик выхода из системы
+  function handleUserLogout() {
+    storeDispatch(signOutUser()).then(function redirectToHome() {
+      router('/');
+    });
+  }
 
-  return <ProfileMenuUI handleLogout={handleLogout} pathname={pathname} />;
+  return <ProfileMenuUI handleLogout={handleUserLogout} pathname={pathname} />;
 };

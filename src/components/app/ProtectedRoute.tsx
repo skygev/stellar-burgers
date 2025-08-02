@@ -1,39 +1,43 @@
 import React from 'react';
 import { Navigate, useLocation } from 'react-router-dom';
-import { useSelector } from 'react-redux';
-import { RootState } from '../../services/store';
+import { useSelector } from '../../services/store';
+import { Preloader } from '../ui/preloader';
+import { getIsSessionVerified } from '../../services/slices/authenticationSlice';
 
 type ProtectedRouteProps = {
-  onlyUnAuth?: boolean;
-  children: React.ReactElement;
+  guestOnly?: boolean; // Флаг "только для гостей" (неавторизованных)
+  children: React.ReactElement; // Дочерние элементы для рендера
 };
 
 export const ProtectedRoute = ({
-  onlyUnAuth,
+  guestOnly,
   children
 }: ProtectedRouteProps) => {
-  const location = useLocation();
-  const { isAuthenticated, loading, user } = useSelector(
-    (state: RootState) => state.auth
-  );
+  // Получение текущего местоположения для сохранения состояния навигации
+  const currentLocation = useLocation();
+  // Проверка завершена ли верификация пользовательской сессии
+  const isAuthVerified = useSelector(getIsSessionVerified);
+  // Получение данных текущего пользователя
+  const currentUser = useSelector((state) => state.authentication.data);
 
-  // Показываем загрузку пока проверяем авторизацию
-  if (loading) {
-    return <div>Загрузка...</div>;
+  // Показываем загрузку пока идет верификация сессии
+  if (!isAuthVerified) {
+    return <Preloader />;
   }
 
-  // Если требуется авторизация и пользователь не авторизован
-  if (!onlyUnAuth && !isAuthenticated) {
-    return <Navigate replace to='/login' state={{ from: location }} />;
+  // Для защищенных маршрутов: перенаправляем неавторизованных на логин
+  if (!guestOnly && !currentUser) {
+    return <Navigate replace to='/login' state={{ from: currentLocation }} />;
   }
 
-  // Если страница только для неавторизованных и пользователь авторизован
-  if (onlyUnAuth && isAuthenticated) {
-    const from = location.state?.from || { pathname: '/' };
-    return <Navigate replace to={from} />;
+  // Для гостевых маршрутов: перенаправляем авторизованных пользователей
+  if (guestOnly && currentUser) {
+    const redirectPath = currentLocation.state?.from || { pathname: '/' };
+    const backgroundLocation = currentLocation.state?.from?.state || null;
+    return (
+      <Navigate replace to={redirectPath} state={{ backgroundLocation }} />
+    );
   }
 
   return children;
 };
-
-export default ProtectedRoute;

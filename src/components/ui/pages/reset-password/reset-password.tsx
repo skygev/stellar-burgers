@@ -10,6 +10,7 @@ import { ResetPasswordUIProps } from './type';
 
 export const ResetPasswordUI: FC<ResetPasswordUIProps> = ({
   errorText,
+  passwordError,
   password,
   setPassword,
   handleSubmit,
@@ -29,13 +30,19 @@ export const ResetPasswordUI: FC<ResetPasswordUIProps> = ({
             onChange={(e) => setPassword(e.target.value)}
             value={password}
             name='password'
+            placeholder='Пароль'
           />
+          {passwordError && (
+            <p className={`${styles.error} text text_type_main-default pt-2`}>
+              {passwordError}
+            </p>
+          )}
         </div>
         <div className='pb-6'>
           <Input
             type='text'
             placeholder='Введите код из письма'
-            onChange={(e) => setToken(e.target.value)}
+            onChange={setToken}
             value={token}
             name='token'
             error={false}
