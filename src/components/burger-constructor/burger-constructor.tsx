@@ -31,6 +31,16 @@ export const BurgerConstructor: FC = () => {
     [dispatch]
   );
 
+  // Очистка конструктора при успешном создании заказа
+  useEffect(
+    function clearConstructorOnSuccess() {
+      if (modalData && !isOrderProcessing) {
+        dispatch(resetBuilder());
+      }
+    },
+    [modalData, isOrderProcessing, dispatch]
+  );
+
   // Функция для обработки клика по кнопке заказа
   function handleOrderClick() {
     const hasRequiredItems = constructorData.bun && !isOrderProcessing;
@@ -51,7 +61,6 @@ export const BurgerConstructor: FC = () => {
 
   // Функция закрытия модального окна
   function handleModalClose() {
-    dispatch(resetBuilder());
     dispatch(closePurchaseModal());
   }
 

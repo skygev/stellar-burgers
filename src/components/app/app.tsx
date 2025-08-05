@@ -15,8 +15,9 @@ import {
 } from '@pages';
 import { useDispatch } from '../../services/store';
 import { verifyUserSession } from '../../services/slices/authenticationSlice';
-import { ProtectedRoute } from './ProtectedRoute';
+import { ProtectedRoute } from '../ProtectedRoute';
 import { Modal, OrderInfo, IngredientDetails, AppHeader } from '@components';
+import { fetchMenuItems } from '../../services/slices/menuCatalogSlice';
 
 const App = () => {
   // Хуки для управления состоянием и навигацией
@@ -30,13 +31,14 @@ const App = () => {
     routerNavigation(-1);
   }
 
-  // Функция инициализации пользовательской сессии
-  function initializeUserSession() {
+  // Функция инициализации приложения
+  function initializeApp() {
     storeDispatch(verifyUserSession());
+    storeDispatch(fetchMenuItems());
   }
 
-  // Проверка сессии пользователя при загрузке приложения
-  useEffect(initializeUserSession, [storeDispatch]);
+  // Инициализация приложения при загрузке
+  useEffect(initializeApp, [storeDispatch]);
 
   return (
     <div className={styles.app}>
@@ -57,6 +59,14 @@ const App = () => {
           element={
             <ProtectedRoute>
               <ProfileOrders />
+            </ProtectedRoute>
+          }
+        />
+        <Route
+          path='/profile/orders/:number'
+          element={
+            <ProtectedRoute>
+              <OrderInfo />
             </ProtectedRoute>
           }
         />
@@ -97,6 +107,7 @@ const App = () => {
 
         {/* Публичные маршруты */}
         <Route path='/feed' element={<Feed />} />
+        <Route path='/feed/:number' element={<OrderInfo />} />
         <Route path='/ingredients/:id' element={<IngredientDetails />} />
         <Route path='/' element={<ConstructorPage />} />
         <Route path='*' element={<NotFound404 />} />
@@ -106,28 +117,10 @@ const App = () => {
       {modalBackgroundLocation && (
         <Routes>
           <Route
-            path='/profile/orders/:number'
-            element={
-              <ProtectedRoute>
-                <Modal title={'Детали заказа'} onClose={handleModalClose}>
-                  <OrderInfo />
-                </Modal>
-              </ProtectedRoute>
-            }
-          />
-          <Route
             path='/ingredients/:id'
             element={
               <Modal title={'Детали ингридиента'} onClose={handleModalClose}>
                 <IngredientDetails />
-              </Modal>
-            }
-          />
-          <Route
-            path='/feed/:number'
-            element={
-              <Modal title={'Детали заказа'} onClose={handleModalClose}>
-                <OrderInfo />
               </Modal>
             }
           />

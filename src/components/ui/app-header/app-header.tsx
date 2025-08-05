@@ -15,33 +15,33 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
     <nav className={`${styles.menu} p-4`}>
       <div className={styles.menu_part_left}>
         <>
-          <BurgerIcon type={'primary'} />
           <NavLink
             className={function generateLinkStyles({ isActive }) {
               return clsx(
                 styles.link,
-                'text text_type_main-default ml-2 mr-10',
+                'text text_type_main-default mr-10',
                 isActive && styles.link_active
               );
             }}
             to='/'
           >
-            <p>Конструктор</p>
+            <BurgerIcon type={'primary'} />
+            <p className='ml-2'>Конструктор</p>
           </NavLink>
         </>
         <>
-          <ListIcon type={'primary'} />
           <NavLink
             className={function generateOrdersLinkStyles({ isActive }) {
               return clsx(
                 styles.link,
-                'text text_type_main-default ml-2',
+                'text text_type_main-default',
                 isActive && styles.link_active
               );
             }}
             to='/feed'
           >
-            <p>Лента заказов</p>
+            <ListIcon type={'primary'} />
+            <p className='ml-2'>Лента заказов</p>
           </NavLink>
         </>
       </div>
@@ -49,17 +49,17 @@ export const AppHeaderUI: FC<TAppHeaderUIProps> = ({ userName }) => (
         <Logo className='' />
       </div>
       <div className={styles.link_position_last}>
-        <ProfileIcon type={'primary'} />
         <NavLink
           className={function generateProfileLinkStyles({ isActive }) {
             return clsx(
               styles.link,
-              'text text_type_main-default ml-2',
+              'text text_type_main-default',
               isActive && styles.link_active
             );
           }}
           to='/profile'
         >
+          <ProfileIcon type={'primary'} />
           <p className='text text_type_main-default ml-2'>
             {userName || 'Личный кабинет'}
           </p>

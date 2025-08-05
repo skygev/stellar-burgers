@@ -2,15 +2,18 @@ import { FC, useMemo, useEffect } from 'react';
 import { Preloader } from '../ui/preloader';
 import { OrderInfoUI } from '../ui/order-info';
 import { TIngredient } from '@utils-types';
-import { useParams } from 'react-router-dom';
+import { useParams, useLocation, useNavigate } from 'react-router-dom';
 import { fetchPurchaseByNumber } from '../../services/slices/purchaseHistorySlice';
 import { getActivityFeed } from '../../services/slices/activityFeedSlice';
 import { getMenuCatalog } from '../../services/slices/menuCatalogSlice';
 import { useSelector, useDispatch } from '../../services/store';
+import styles from '../ui/order-info/order-info.module.css';
 
 export const OrderInfo: FC = () => {
   const { number } = useParams();
   const storeDispatch = useDispatch();
+  const location = useLocation();
+  const navigate = useNavigate();
 
   // Получение каталога ингредиентов из хранилища
   const catalogData = useSelector(getMenuCatalog);
@@ -24,10 +27,19 @@ export const OrderInfo: FC = () => {
 
   // Получение данных ленты активности
   const activityData = useSelector(getActivityFeed).activityData?.orders || [];
-  const completedOrders = activityData.filter((item) => item.status === 'done');
-  const orderData = completedOrders.find(
-    (item) => item.number === Number(number)
+
+  // Получение заказа из истории покупок (если загружен через API)
+  const purchaseData = useSelector(
+    (state) => state.purchaseHistory.selectedPurchase
   );
+
+  // Поиск заказа сначала в ленте (все заказы, не только выполненные)
+  let orderData = activityData.find((item) => item.number === Number(number));
+
+  // Если заказ не найден в ленте, но есть в истории покупок с тем же номером
+  if (!orderData && purchaseData && purchaseData.number === Number(number)) {
+    orderData = purchaseData;
+  }
 
   // Загрузка данных о заказе при монтировании
   useEffect(
@@ -94,6 +106,29 @@ export const OrderInfo: FC = () => {
 
   if (!orderInfo) {
     return <Preloader />;
+  }
+
+  // Если это отдельная страница (не модальное окно), добавляем заголовок и кнопку закрытия
+  const isModalPage = location.state?.background;
+
+  if (!isModalPage) {
+    return (
+      <div className={styles.pageContainer}>
+        <div className={styles.pageContent}>
+          {/* Заголовок страницы с номером заказа и кнопкой закрытия */}
+          <div className={styles.pageHeader}>
+            <h1 className={`text text_type_digits-default`}>
+              #{String(orderInfo.number).padStart(6, '0')}
+            </h1>
+            <button onClick={() => navigate(-1)} className={styles.closeButton}>
+              ✕
+            </button>
+          </div>
+          {/* Компонент заказа без номера для отдельной страницы */}
+          <OrderInfoUI orderInfo={{ ...orderInfo, showNumber: false }} />
+        </div>
+      </div>
+    );
   }
 
   return <OrderInfoUI orderInfo={orderInfo} />;
