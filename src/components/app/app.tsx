@@ -124,6 +124,22 @@ const App = () => {
               </Modal>
             }
           />
+          <Route
+            path='/feed/:number'
+            element={
+              <Modal title={'modal-order'} onClose={handleModalClose}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
+          <Route
+            path='/profile/orders/:number'
+            element={
+              <Modal title={'modal-order'} onClose={handleModalClose}>
+                <OrderInfo />
+              </Modal>
+            }
+          />
         </Routes>
       )}
     </div>

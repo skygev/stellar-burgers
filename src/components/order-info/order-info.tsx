@@ -108,28 +108,20 @@ export const OrderInfo: FC = () => {
     return <Preloader />;
   }
 
-  // Если это отдельная страница (не модальное окно), добавляем заголовок и кнопку закрытия
+  // Проверяем, открыта ли страница как модальное окно
   const isModalPage = location.state?.background;
 
   if (!isModalPage) {
+    // Отдельная страница - показываем номер заказа в центре, без кнопки закрытия
     return (
       <div className={styles.pageContainer}>
         <div className={styles.pageContent}>
-          {/* Заголовок страницы с номером заказа и кнопкой закрытия */}
-          <div className={styles.pageHeader}>
-            <h1 className={`text text_type_digits-default`}>
-              #{String(orderInfo.number).padStart(6, '0')}
-            </h1>
-            <button onClick={() => navigate(-1)} className={styles.closeButton}>
-              ✕
-            </button>
-          </div>
-          {/* Компонент заказа без номера для отдельной страницы */}
-          <OrderInfoUI orderInfo={{ ...orderInfo, showNumber: false }} />
+          <OrderInfoUI orderInfo={{ ...orderInfo, showNumber: true }} />
         </div>
       </div>
     );
   }
 
-  return <OrderInfoUI orderInfo={orderInfo} />;
+  // Модальное окно - номер заказа показывается в заголовке модального окна
+  return <OrderInfoUI orderInfo={{ ...orderInfo, showNumber: false }} />;
 };
