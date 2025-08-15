@@ -1,10 +1,20 @@
 import { ProfileOrdersUI } from '@ui-pages';
 import { TOrder } from '@utils-types';
-import { FC } from 'react';
+import { FC, useEffect } from 'react';
+import { useDispatch, useSelector } from '../../services/store';
+import { fetchUserPurchases } from '../../services/slices/purchaseHistorySlice';
 
 export const ProfileOrders: FC = () => {
-  /** TODO: взять переменную из стора */
-  const orders: TOrder[] = [];
+  const storeDispatch = useDispatch();
+  const userOrdersList: TOrder[] = useSelector(
+    (state) => state.purchaseHistory.purchaseList
+  );
 
-  return <ProfileOrdersUI orders={orders} />;
+  function loadUserOrdersData() {
+    storeDispatch(fetchUserPurchases());
+  }
+
+  useEffect(loadUserOrdersData, [storeDispatch]);
+
+  return <ProfileOrdersUI orders={userOrdersList} />;
 };

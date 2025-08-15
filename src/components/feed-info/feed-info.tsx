@@ -2,7 +2,10 @@ import { FC } from 'react';
 
 import { TOrder } from '@utils-types';
 import { FeedInfoUI } from '../ui/feed-info';
+import { useSelector } from '../../services/store';
+import { getActivityFeed } from '../../services/slices/activityFeedSlice';
 
+// Вспомогательная функция для получения номеров заказов по статусу
 const getOrders = (orders: TOrder[], status: string): number[] =>
   orders
     .filter((item) => item.status === status)
@@ -10,19 +13,21 @@ const getOrders = (orders: TOrder[], status: string): number[] =>
     .slice(0, 20);
 
 export const FeedInfo: FC = () => {
-  /** TODO: взять переменные из стора */
-  const orders: TOrder[] = [];
-  const feed = {};
+  // Получение данных активности из хранилища
+  const activityFeedData = useSelector(getActivityFeed);
 
-  const readyOrders = getOrders(orders, 'done');
+  // Извлечение списка заказов с проверкой на существование
+  const ordersList = activityFeedData.activityData?.orders || [];
 
-  const pendingOrders = getOrders(orders, 'pending');
+  // Получение готовых и ожидающих заказов
+  const readyOrders = getOrders(ordersList, 'done');
+  const pendingOrders = getOrders(ordersList, 'pending');
 
   return (
     <FeedInfoUI
       readyOrders={readyOrders}
       pendingOrders={pendingOrders}
-      feed={feed}
+      feed={activityFeedData.activityData}
     />
   );
 };
