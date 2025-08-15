@@ -78,7 +78,7 @@ describe('Интеграционные тесты на Cypress написаны 
     cy.get('body').type('{esc}');
     cy.contains('идентификатор заказа').should('not.exist');
 
-    // Проверяем, что конструктор очищен
+    // Проверяем, что конструктор очищеный
     cy.contains('Выберите булки').should('exist');
     cy.contains('Выберите начинку').should('exist');
   });
