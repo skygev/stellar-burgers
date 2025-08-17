@@ -78,12 +78,7 @@ module.exports = {
       '@utils-types': path.resolve(__dirname, './src/utils/types'),
       '@api': path.resolve(__dirname, './src/utils/burger-api.ts'),
       '@slices': path.resolve(__dirname, './src/services/slices'),
-      '@selectors': path.resolve(__dirname, './src/services/selectors'),
-      '@store': path.resolve(__dirname, './src/services/store.ts'),
-      '@ingredientsSlice': path.resolve(
-        __dirname,
-        './src/services/ingredientsSlice.ts'
-      )
+      '@selectors': path.resolve(__dirname, './src/services/selectors')
     }
   },
   output: {

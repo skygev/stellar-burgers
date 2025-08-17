@@ -1,64 +1,61 @@
 import { ProfileUI } from '@ui-pages';
 import { FC, SyntheticEvent, useEffect, useState } from 'react';
-import { useDispatch, useSelector } from '../../services/store';
-import {
-  getUserProfile,
-  updateUserProfile
-} from '../../services/slices/authenticationSlice';
 
 export const Profile: FC = () => {
-  const storeDispatch = useDispatch();
-  const currentUser = useSelector(getUserProfile);
+  /** TODO: взять переменную из стора */
+  const user = {
+    name: '',
+    email: ''
+  };
 
   const [formValue, setFormValue] = useState({
-    name: currentUser?.name || '',
-    email: currentUser?.email || '',
+    name: user.name,
+    email: user.email,
     password: ''
   });
 
-  function updateFormWithUserData() {
+  useEffect(() => {
     setFormValue((prevState) => ({
       ...prevState,
-      name: currentUser?.name || '',
-      email: currentUser?.email || ''
+      name: user?.name || '',
+      email: user?.email || ''
     }));
-  }
-
-  useEffect(updateFormWithUserData, [currentUser]);
+  }, [user]);
 
   const isFormChanged =
-    formValue.name !== currentUser?.name ||
-    formValue.email !== currentUser?.email ||
+    formValue.name !== user?.name ||
+    formValue.email !== user?.email ||
     !!formValue.password;
 
-  function handleFormSubmission(e: SyntheticEvent) {
+  const handleSubmit = (e: SyntheticEvent) => {
     e.preventDefault();
-    storeDispatch(updateUserProfile(formValue));
-  }
+  };
 
-  function handleFormReset(e: SyntheticEvent) {
+  const handleCancel = (e: SyntheticEvent) => {
     e.preventDefault();
     setFormValue({
-      name: currentUser?.name || '',
-      email: currentUser?.email || '',
+      name: user.name,
+      email: user.email,
       password: ''
     });
-  }
+  };
 
-  function handleInputChange(e: React.ChangeEvent<HTMLInputElement>) {
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setFormValue((prevState) => ({
       ...prevState,
       [e.target.name]: e.target.value
     }));
-  }
+  };
 
   return (
     <ProfileUI
       formValue={formValue}
       isFormChanged={isFormChanged}
-      handleCancel={handleFormReset}
-      handleSubmit={handleFormSubmission}
+      handleCancel={handleCancel}
+      handleSubmit={handleSubmit}
       handleInputChange={handleInputChange}
     />
   );
+
+  return null;
 };
