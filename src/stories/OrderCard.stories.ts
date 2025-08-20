@@ -72,6 +72,15 @@ export const DefaultOrderCard: Story = {
       number: 3,
       ingredients: ['Булка', 'Начинка']
     },
-    maxIngredients: 5
+    maxIngredients: 5,
+    locationState: {
+      background: {
+        hash: '',
+        key: 'eitkep27',
+        pathname: '/',
+        search: '',
+        state: null
+      }
+    }
   }
 };
