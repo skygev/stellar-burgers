@@ -23,16 +23,16 @@
         <div class='clearfix'>
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.05% </span>
+                <span class="strong">87.32% </span>
                 <span class="quiet">Statements</span>
-                <span class='fraction'>54/71</span>
+                <span class='fraction'>62/71</span>
             </div>
         
             
             <div class='fl pad1y space-right2'>
                 <span class="strong">100% </span>
                 <span class="quiet">Branches</span>
-                <span class='fraction'>1/1</span>
+                <span class='fraction'>6/6</span>
             </div>
         
             
@@ -44,9 +44,9 @@
         
             
             <div class='fl pad1y space-right2'>
-                <span class="strong">76.05% </span>
+                <span class="strong">87.32% </span>
                 <span class="quiet">Lines</span>
-                <span class='fraction'>54/71</span>
+                <span class='fraction'>62/71</span>
             </div>
         
             
@@ -57,11 +57,11 @@
         <template id="filterTemplate">
             <div class="quiet">
                 Filter:
-                <input oninput="onInput()" type="search" id="fileSearch">
+                <input type="search" id="fileSearch">
             </div>
         </template>
     </div>
-    <div class='status-line medium'></div>
+    <div class='status-line high'></div>
     <pre><table class="coverage">
 <tr><td class="line-count quiet"><a name='L1'></a><a href='#L1'>1</a>
 <a name='L2'></a><a href='#L2'>2</a>
@@ -177,25 +177,25 @@
 <span class="cline-any cline-no">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-no">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-yes">2x</span>
+<span class="cline-any cline-yes">2x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -251,20 +251,20 @@ export const activityFeedSlice = createSlice({
     builder
       // Обработка ошибки загрузки
       .addCase(fetchActivityFeed.rejected, function (state, action) {
-<span class="cstat-no" title="statement not covered" >        state.isLoading = false;</span>
-<span class="cstat-no" title="statement not covered" >        const errorMsg = action.error.message;</span>
-<span class="cstat-no" title="statement not covered" >        state.errorMessage = errorMsg ? errorMsg : 'Unknown error occurred';</span>
+        state.isLoading = false;
+        const errorMsg = action.error.message;
+        state.errorMessage = errorMsg ? errorMsg : 'Unknown error occurred';
       })
       // Успешная загрузка данных ленты
       .addCase(fetchActivityFeed.fulfilled, function (state, action) {
-<span class="cstat-no" title="statement not covered" >        state.errorMessage = null;</span>
-<span class="cstat-no" title="statement not covered" >        state.isLoading = false;</span>
-<span class="cstat-no" title="statement not covered" >        state.activityData = action.payload;</span>
+        state.errorMessage = null;
+        state.isLoading = false;
+        state.activityData = action.payload;
       })
       // Начало загрузки данных
       .addCase(fetchActivityFeed.pending, function (state) {
-<span class="cstat-no" title="statement not covered" >        state.errorMessage = null;</span>
-<span class="cstat-no" title="statement not covered" >        state.isLoading = true;</span>
+        state.errorMessage = null;
+        state.isLoading = true;
       });
   }
 });
@@ -283,7 +283,7 @@ export const activityFeedReducer = sliceReducer;
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2025-08-14T13:26:12.946Z
+                at 2025-08-23T19:32:32.999Z
             </div>
         <script src="../../prettify.js"></script>
         <script>
